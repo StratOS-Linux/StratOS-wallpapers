@@ -1,0 +1,48 @@
+#! /bin/sh
+
+#-- lawyp --#
+# Generates a beautiful gradient wallpaper .
+# with a given image overlayed.
+# Dependencies:
+#	- convert (imagemagick)
+# ~ ADIGEN
+
+_usage() {
+	cat <<EOF
+Usage:	lawyp OUTPUT_FILE OVERLAY_FILE
+	lawyp help show this help
+EOF
+}
+
+_generate() {
+	output_file=${1}
+	overlay_file=${2}
+	echo $output_file $overlay_file
+	if [ ! -f $overlay_file ]; then
+		echo "Overlay file ($overlay_file) could not be found."
+		exit 1
+	fi
+
+	# Generate a random noise map
+	convert -size "100x56" xc: +noise Random /tmp/noise.png
+
+	# Blur the map
+	convert /tmp/noise.png -virtual-pixel tile -blur 0x14 -auto-level -resize 1920x1080 /tmp/noise.png
+
+	# Make it look pastel
+	convert /tmp/noise.png -fill White -colorize 50 /tmp/noise.png
+	
+	# Add the overlay image
+	convert /tmp/noise.png ${overlay_file} -gravity Center -geometry 256x256+30+5 -composite ${output_file}
+
+	rm /tmp/noise.png
+}
+
+case "$1" in
+	help|-h|--help|'')
+		_usage
+		;;
+	*)
+		_generate $@
+		;;
+esac
