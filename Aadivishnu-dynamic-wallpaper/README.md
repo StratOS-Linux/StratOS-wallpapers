@@ -3,7 +3,7 @@
 ## Usage:
 ```
 Usage:	lawyp OUTPUT_FILE OVERLAY_FILE
-        lawyp help show this help
+        lawyp help                      # show this help
 ```
 
 ## Todo:
