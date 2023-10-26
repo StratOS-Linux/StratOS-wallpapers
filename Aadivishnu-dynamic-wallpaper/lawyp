@@ -1,8 +1,7 @@
 #! /bin/sh
 
 #-- lawyp --#
-# Generates a beautiful gradient wallpaper .
-# with a given image overlayed.
+# Generates a beautiful gradient wallpaper with a given image overlayed
 # Dependencies:
 #	- convert (imagemagick)
 # ~ ADIGEN
@@ -17,7 +16,8 @@ EOF
 _generate() {
 	output_file=${1}
 	overlay_file=${2}
-	echo $output_file $overlay_file
+	
+	# Check if overlay_file exists
 	if [ ! -f $overlay_file ]; then
 		echo "Overlay file ($overlay_file) could not be found."
 		exit 1
