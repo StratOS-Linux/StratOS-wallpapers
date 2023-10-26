@@ -8,14 +8,18 @@
 
 _usage() {
 	cat <<EOF
-Usage:	lawyp OUTPUT_FILE OVERLAY_FILE
-	lawyp help							# show this help
+Usage:	lawyp OUTPUT_FILE OVERLAY_FILE [DIMENSIONS]
+	lawyp help										# show this help
+
+The DIMENSIONS are for what the width and height of the overlay file should be resized to, in the format WxH
+For eg.: 512x512, 256x256, 343x299
 EOF
 }
 
 _generate() {
 	output_file=${1}
 	overlay_file=${2}
+	resize_dimensions=${3:-256x256}
 	
 	# Check if overlay_file exists
 	if [ ! -f $overlay_file ]; then
@@ -33,7 +37,7 @@ _generate() {
 	convert /tmp/noise.png -fill White -colorize 50 /tmp/noise.png
 	
 	# Add the overlay image
-	convert /tmp/noise.png ${overlay_file} -gravity Center -geometry 256x256+30+5 -composite ${output_file}
+	convert /tmp/noise.png ${overlay_file} -gravity Center -geometry ${resize_dimensions}+0+0 -composite ${output_file}
 
 	rm /tmp/noise.png
 }
