@@ -13,7 +13,7 @@ DIMENSIONS:
 
 ## Todo:
 - [x] Random colors generation
-- [ ] Generate based on colorscheme
+- [x] Generate based on colorscheme
 - [ ] Fetch colors from display
 
 ## What does lawyp mean?

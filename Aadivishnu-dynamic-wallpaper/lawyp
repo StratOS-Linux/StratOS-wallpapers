@@ -8,24 +8,27 @@
 
 _usage() {
 	cat <<EOF
-Usage:	lawyp OUTPUT_FILE OVERLAY_FILE [DIMENSIONS]
-	lawyp help										# show this help
+Usage: lawyp -o "/path/to/output" [OPTIONS]
 
-DIMENSIONS:
-	The dimensions are for what the width and height of the overlay file should be resized to, in the format WxH
-	For eg.: 512x512, 256x256, 343x299
-	Default value: 256x256
+Options:
+    -h, --help, help        show this help
+    -i "/path/to/overlay"   File to be overlayed
+    -r "WxH"                Size the overlay image should be resized to. Default: 256x256
+    -c "#HEXCODE"           Hex code of the main color to be used. Example: -r "#ff8800"
+    -p                      Generate a pastel-like wallpaper (Recommended to use if not using -c)
 EOF
 }
 
 _generate() {
-	output_file=${1}
-	overlay_file=${2}
-	resize_dimensions=${3:-256x256}
+	output=${o}
+	overlay=${i}
+	color=${c}
+	pastel=${p}
+	resize_dimensions=${r:-256x256}
 	
 	# Check if overlay_file exists
-	if [ ! -f $overlay_file ]; then
-		echo "Overlay file ($overlay_file) could not be found."
+	if [ "${overlay}" -a ! -f ${overlay} ]; then
+		echo "Overlay file (${overlay}) could not be found."
 		exit 1
 	fi
 
@@ -36,10 +39,13 @@ _generate() {
 	convert /tmp/noise.png -virtual-pixel tile -blur 0x14 -auto-level -resize 1920x1080 /tmp/noise.png
 
 	# Make it look pastel
-	convert /tmp/noise.png -fill White -colorize 50 /tmp/noise.png
-	
+	[ ${color} ] && convert /tmp/noise.png -fill ${color} -colorize 50 /tmp/noise.png
+	[ ${pastel} ] && convert /tmp/noise.png -fill White -colorize 50 /tmp/noise.png
+
 	# Add the overlay image
-	convert /tmp/noise.png ${overlay_file} -gravity Center -geometry ${resize_dimensions}+0+0 -composite ${output_file}
+	[ ${overlay} ] && convert /tmp/noise.png ${overlay} -gravity Center -geometry ${resize_dimensions}+0+0 -composite /tmp/noise.png
+
+	cp /tmp/noise.png ${output}
 
 	rm /tmp/noise.png
 }
@@ -47,8 +53,23 @@ _generate() {
 case "$1" in
 	help|-h|--help|'')
 		_usage
-		;;
-	*)
-		_generate $@
+		exit 0
 		;;
 esac
+
+while getopts "o:i:c:r:p" opt; do
+	case $opt in
+		\?) ;;
+		*)
+			OPTARG=${OPTARG:-true}
+			eval "$opt=$OPTARG"
+			;;
+	esac
+done
+
+if [ ! $o ]; then
+	echo "Output file not mentioned. Add it using -o \"/path/to/output\"."
+	exit 1
+fi
+
+_generate
