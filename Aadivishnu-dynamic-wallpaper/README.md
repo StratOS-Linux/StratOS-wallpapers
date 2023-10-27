@@ -14,7 +14,6 @@ DIMENSIONS:
 ## Todo:
 - [x] Random colors generation
 - [x] Generate based on colorscheme
-- [ ] Fetch colors from display
 
 ## What does lawyp mean?
 Opposite of pywal (Thanks to [ZeStig](https://github.com/zstg) for the name)
