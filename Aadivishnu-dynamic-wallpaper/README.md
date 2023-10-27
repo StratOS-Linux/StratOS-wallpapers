@@ -2,13 +2,14 @@
 
 ## Usage:
 ```
-Usage:	lawyp OUTPUT_FILE OVERLAY_FILE [DIMENSIONS]
-        lawyp help										# show this help
+Usage: lawyp -o "/path/to/output" [OPTIONS]
 
-DIMENSIONS:
-	The dimensions are for what the width and height of the overlay file should be resized to, in the format WxH
-	For eg.: 512x512, 256x256, 343x299
-	Default value: 256x256
+Options:
+    -h, --help, help        show this help
+    -i "/path/to/overlay"   File to be overlayed
+    -r "WxH"                Size the overlay image should be resized to. Default: 256x256
+    -c "#HEXCODE"           Hex code of the main color to be used. Example: -r "#ff8800"
+    -p                      Generate a pastel-like wallpaper (Recommended to use if not using -c)
 ```
 
 ## Todo:
