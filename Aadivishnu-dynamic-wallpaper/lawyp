@@ -1,0 +1,75 @@
+#! /bin/sh
+
+#-- lawyp --#
+# Generates a beautiful gradient wallpaper with a given image overlayed
+# Dependencies:
+#	- convert (imagemagick)
+# ~ ADIGEN
+
+_usage() {
+	cat <<EOF
+Usage: lawyp -o "/path/to/output" [OPTIONS]
+
+Options:
+    -h, --help, help        show this help
+    -i "/path/to/overlay"   File to be overlayed
+    -r "WxH"                Size the overlay image should be resized to. Default: 256x256
+    -c "#HEXCODE"           Hex code of the main color to be used. Example: -r "#ff8800"
+    -p                      Generate a pastel-like wallpaper (Recommended to use if not using -c)
+EOF
+}
+
+_generate() {
+	output=${o}
+	overlay=${i}
+	color=${c}
+	pastel=${p}
+	resize_dimensions=${r:-256x256}
+	
+	# Check if overlay_file exists
+	if [ "${overlay}" -a ! -f ${overlay} ]; then
+		echo "Overlay file (${overlay}) could not be found."
+		exit 1
+	fi
+
+	# Generate a random noise map
+	convert -size "100x56" xc: +noise Random /tmp/noise.png
+
+	# Blur the map
+	convert /tmp/noise.png -virtual-pixel tile -blur 0x14 -auto-level -resize 1920x1080 /tmp/noise.png
+
+	# Make it look pastel
+	[ ${color} ] && convert /tmp/noise.png -fill ${color} -colorize 50 /tmp/noise.png
+	[ ${pastel} ] && convert /tmp/noise.png -fill White -colorize 50 /tmp/noise.png
+
+	# Add the overlay image
+	[ ${overlay} ] && convert /tmp/noise.png ${overlay} -gravity Center -geometry ${resize_dimensions}+0+0 -composite /tmp/noise.png
+
+	cp /tmp/noise.png ${output}
+
+	rm /tmp/noise.png
+}
+
+case "$1" in
+	help|-h|--help|'')
+		_usage
+		exit 0
+		;;
+esac
+
+while getopts "o:i:c:r:p" opt; do
+	case $opt in
+		\?) ;;
+		*)
+			OPTARG=${OPTARG:-true}
+			eval "$opt=$OPTARG"
+			;;
+	esac
+done
+
+if [ ! $o ]; then
+	echo "Output file not mentioned. Add it using -o \"/path/to/output\"."
+	exit 1
+fi
+
+_generate
