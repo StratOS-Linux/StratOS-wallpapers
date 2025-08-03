@@ -6,10 +6,10 @@ pkgdesc="StratOS wallpapers"
 arch=('any')
 license=('GPL3')
 depends=()
-source=()
-md5sums=()
+source=("backgrounds/")
+md5sums=('SKIP')
 
 package() {
     install -d "$pkgdir/usr/share/backgrounds/StratOS/"
-    cp -a "usr/share/backgrounds/StratOS/." "$pkgdir/usr/share/backgrounds/StratOS/"
+    cp -a "$srcdir/backgrounds/StratOS/." "$pkgdir/usr/share/backgrounds/StratOS/"
 }
