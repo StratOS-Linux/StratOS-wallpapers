@@ -1,0 +1,3 @@
+post_install() {
+  echo "==> Wallpapers have been added to /usr/share/backgrounds/StratOS/"
+}
