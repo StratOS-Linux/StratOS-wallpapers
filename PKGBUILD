@@ -1,7 +1,7 @@
 # Maintainer: @zstg <zestig@duck.com>
 pkgname=stratos-wallpapers
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="StratOS wallpapers"
 arch=('any')
 license=('GPL3')
